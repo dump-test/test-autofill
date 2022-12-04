@@ -1,0 +1,17 @@
+{
+	"name": "test-autofill",
+	"version": "0.0.0",
+	"description": "Test Autofill Chrome Extension",
+	"main": "index.js",
+	"scripts": {
+		"test": "node ./index.js",
+		"start": "node ./index.js",
+		"postinstall": "npm config set script-shell \"/bin/bash\"; source ./postinstall.sh"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"chosen": "github:harvesthq/chosen#0.14.0",
+		"express": "^4.18.2"
+	}
+}

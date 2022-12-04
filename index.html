@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Test Autofill
+		</title>
+
+		<link
+			rel="stylesheet"
+			href="/node_modules/chosen/public/chosen.css"
+		>
+
+		<script
+			type="application/javascript"
+			src="/node_modules/chosen/public/chosen.jquery.js"
+		>
+		</script>
+	</head>
+	<body>
+		<form>
+			<select
+				id="field-deduction_code"
+				class="chosen-select chzn-done"
+
+				name="deduction_code"
+				data-placeholder="Select Deduction code"
+
+				style="
+					width: 300px;
+					display: none;
+				"
+			>
+				<option value=""></option>
+				<option value="29">PULIS KAPIT BISIG MULTI PURPOSE COOPERATIVE CASH LOAN</option>
+				<option value="42">PULIS KAPIT BISIG MULTI PURPOSE COOPERATIVE CASH LOAN -2</option>
+				<option value="32">PULIS KAPIT BISIG MULTI PURPOSE COOPERATIVE COMMODITY LOAN</option>
+				<option value="31">PULIS KAPIT BISIG MULTI PURPOSE COOPERATIVE FIXED DEPOSIT</option>
+				<option value="30">PULIS KAPIT BISIG MULTI PURPOSE COOPERATIVE SAVINGS DEPOSIT</option>
+			</select>
+		</form>
+
+		<script
+			type="application/javascript"
+			src="/client.js"
+		>
+		</script>
+	</body>
+</html>
