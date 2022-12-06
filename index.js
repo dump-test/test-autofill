@@ -12,6 +12,12 @@ const main = (
 					express( )
 				);
 
+				SERVICE.use(
+					(
+						express.static( "./" )
+					)
+				);
+
 				SERVICE.listen(
 					(
 						PORT
