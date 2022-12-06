@@ -2,7 +2,9 @@
 
 #reset;
 
-ngrok config add-authtoken $(<ngrok.token);
+NGROK_TOKEN=$(echo $(<ngrok.token) | tr -d " \t\n\r");
+
+ngrok config add-authtoken $NGROK_TOKEN;
 
 ngrok http $PORT > /dev/null &
 
