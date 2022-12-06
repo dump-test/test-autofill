@@ -11,4 +11,4 @@ npm run stop;
 [[ ! -z "$(ls ./*.pid 2> /dev/null)" ]] &&\
 rm -rfv ./*.pid 2> /dev/null && true;
 
-#reset;
+reset;
