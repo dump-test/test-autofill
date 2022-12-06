@@ -17,4 +17,4 @@ rm -rfv ./ngrok.token 2> /dev/null && true;
 [[ ! -f "./ngrok.token" ]] &&\
 touch ./ngrok.token;
 
-#reset;
+reset;

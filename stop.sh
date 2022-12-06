@@ -10,4 +10,4 @@ kill -9 $NODE_PID &> /dev/null && true;
 
 sleep 1;
 
-#reset;
+reset;

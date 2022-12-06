@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#reset;
+reset;
 
 NGROK_TOKEN=$(echo $(<ngrok.token) | tr -d " \t\n\r");
 

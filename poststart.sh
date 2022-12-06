@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#reset;
+reset;
 
 sleep 3;
 

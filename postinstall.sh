@@ -36,4 +36,4 @@ grunt build;
 [[ -d "../chosen" ]] &&\
 cd -;
 
-#reset;
+reset;
