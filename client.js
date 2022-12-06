@@ -2,16 +2,21 @@
 
 const main = (
 	async	function main( ){
-				$( "#field-deduction_code" ).chosen( )
+				$( "#field-deduction_code" )
+				.chosen(
+					(
+						{
+							"width": "300px"
+						}
+					)
+				);
 			}
 );
 
 (
-	await	(
-				(
-					async	function( ){
-								await	main( );
-							}
-				)( )
-			)
+	(
+		async	function( ){
+					await	main( );
+				}
+	)( )
 );

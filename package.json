@@ -4,10 +4,16 @@
 	"description": "Test Autofill Chrome Extension",
 	"main": "index.js",
 	"scripts": {
+		"reset": "source ./reset.sh",
+		"postinstall": "source ./postinstall.sh",
+
 		"test": "node ./index.js",
-		"start": "node ./index.js",
-		"reset": "npm config set script-shell \"/bin/bash\"; source ./reset.sh",
-		"postinstall": "npm config set script-shell \"/bin/bash\"; source ./postinstall.sh"
+
+		"prestart": "source ./environment.sh && source ./prestart.sh",
+		"start": "source ./environment.sh && node ./index.js >&1 &",
+		"poststart": "source ./poststart.sh",
+
+		"stop": "source ./stop.sh"
 	},
 	"author": "",
 	"license": "MIT",

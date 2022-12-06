@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
+[[ ! -x $(which ngrok) ]] &&\
+sudo snap install ngrok;
+
+[[ ! -x $(which ruby) ]] &&\
 sudo snap install ruby --classic;
+
+[[ ! -x $(which jq) ]] &&\
+sudo apt-get install jq;
 
 gem update --system;
 
+[[ ! -x $(which compass) ]] &&\
 gem install compass;
 
 GEM_BIN_PATH="$HOME/.gem/bin";
@@ -27,3 +35,5 @@ grunt build;
 
 [[ -d "../chosen" ]] &&\
 cd -;
+
+reset;
