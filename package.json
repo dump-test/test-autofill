@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "node ./index.js",
 		"start": "node ./index.js",
+		"reset": "npm config set script-shell \"/bin/bash\"; source ./reset.sh",
 		"postinstall": "npm config set script-shell \"/bin/bash\"; source ./postinstall.sh"
 	},
 	"author": "",
