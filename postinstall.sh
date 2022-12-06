@@ -19,8 +19,11 @@ export PATH="$PATH:$GBP";
 
 cd ./node_modules/chosen;
 
+[[ -d "../chosen" ]] &&\
 npm install;
 
+[[ -d "../chosen" ]] &&\
 grunt build;
 
+[[ -d "../chosen" ]] &&\
 cd -;
