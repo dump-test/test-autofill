@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-reset;
+#reset;
+
+ngrok config add-authtoken $(<ngrok.token);
 
 ngrok http $PORT > /dev/null &
 

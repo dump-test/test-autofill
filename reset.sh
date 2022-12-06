@@ -11,4 +11,10 @@ npm run stop;
 [[ ! -z "$(ls ./*.pid 2> /dev/null)" ]] &&\
 rm -rfv ./*.pid 2> /dev/null && true;
 
-reset;
+[[ -f "./ngrok.token" ]] &&\
+rm -rfv ./ngrok.token 2> /dev/null && true;
+
+[[ ! -f "./ngrok.token" ]] &&\
+touch ./ngrok.token;
+
+#reset;
