@@ -33,7 +33,7 @@ injectJquery( )
 						$( "option[value='${ targetOption }']", targetSelectComponent )
 						.attr( "selected", "selected" );
 
-						targetSelectComponent.trigger( "liszt:updated.chosen" );
+						targetSelectComponent.trigger( "liszt:updated" );
 					}
 				}
 			);
