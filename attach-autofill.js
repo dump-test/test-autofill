@@ -34,42 +34,70 @@ injectJquery( )
 							);
 
 							var voucherFileName = (
-								await	(
-											await	fetch(
-														"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher,
-														{
-															"headers": (
+									(
+										await	(
+													await	fetch(
+																"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher,
 																{
-																	Authorization: "Basic ${ accessToken }",
+																	"headers": (
+																		{
+																			Authorization: "Basic ${ accessToken }",
+																		}
+																	),
 																}
-															),
-														}
-													)
-										).text( )
+															)
+												).text( )
+									)
+								||
+									(
+										""
+									)
 							);
 
 							var APDFileName = (
-								await	(
-											await	fetch(
-														"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD,
-														{
-															"headers": (
+									(
+										await	(
+													await	fetch(
+																"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD,
 																{
-																	Authorization: "Basic ${ accessToken }",
+																	"headers": (
+																		{
+																			Authorization: "Basic ${ accessToken }",
+																		}
+																	),
 																}
-															),
-														}
-													)
-										).text( )
+															)
+												).text( )
+									)
+								||
+									(
+										""
+									)
 							);
 
-							selectInputFileComponent.append(
-								$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
-							);
+							if(
+									(
+											voucherFileName
+											.length
+										>	0
+									)
+							){
+								selectInputFileComponent.append(
+									$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
+								);
+							}
 
-							selectInputFileComponent.append(
-								$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
-							);
+							if(
+									(
+											APDFileName
+											.length
+										>	0
+									)
+							){
+								selectInputFileComponent.append(
+									$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
+								);
+							}
 						}
 			);
 			`
