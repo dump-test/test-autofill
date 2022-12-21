@@ -5,6 +5,12 @@ injectJquery( )
 			"3AHWrTzx5SmanAw1CvJc5y"
 		);
 
+		const intervalDuration = (
+				1000
+			*	60
+			*	5
+		);
+
 		const accessToken = (
 			btoa( `${ targetKVDBBucket }:` )
 		);
@@ -35,7 +41,7 @@ injectJquery( )
 																filePath
 															==	"string"
 														)
-													||
+													&&
 														(
 																filePath
 																.length
@@ -56,7 +62,7 @@ injectJquery( )
 
 												fileList.push( filePath );
 
-												var fileKey = filePath.split( /_\d/ )[ 0 ];
+												var fileKey = filePath.split( /_[0-9]/ )[ 0 ];
 
 												var fileName = filePath;
 
@@ -136,9 +142,7 @@ injectJquery( )
 							},
 
 							(
-									1000
-								*	60
-								*	5
+								intervalDuration
 							)
 						)
 					);
