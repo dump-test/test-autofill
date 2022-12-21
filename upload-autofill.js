@@ -142,7 +142,7 @@ injectJquery( )
 							},
 
 							(
-								intervalDuration
+								${ intervalDuration }
 							)
 						)
 					);
