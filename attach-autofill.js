@@ -2,7 +2,7 @@ injectJquery( )
 .then(
 	function( ){
 		const targetKVDBBucket = (
-			"3AHWrTzx5SmanAw1CvJc5y"
+			"AKqecytVsXASjZrSyXK6G5"
 		);
 
 		const accessToken = (
@@ -12,99 +12,127 @@ injectJquery( )
 		const actualCode = (
 			`
 			$(
-				async	function( ){
-							var selectInputFileComponent = (
-								$( "select#fli_files_multiple_select" )
-							);
+				function( ){
+					(
+						async	function( ){
+									var selectInputFileComponent = (
+										$( "select#fli_files_multiple_select" )
+									);
 
-							var accountNameLabelComponent = (
-								$( "" )
-							);
+									var accountNameLabelComponent = (
+										$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
+									);
 
-							var accountName = (
-								accountNameLabelComponent.text( ).trim( )
-							);
+									var accountName = (
+										accountNameLabelComponent.text( ).trim( )
+									);
 
-							var fileKeyVoucher = (
-								accountName.replace( /\W+/g, "_" ) + "_VOUCHER"
-							);
+									var fileKeyVoucher = (
+										accountName.replace( /[^A-Z]+/g, "_" ) + "_VOUCHER"
+									);
 
-							var fileKeyAPD = (
-								accountName.replace( /\W+/g, "_" ) + "_APD"
-							);
+									var fileKeyAPD = (
+										accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
+									);
 
-							var voucherFileName = (
-									(
-										await	(
-													await	fetch(
-																"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher,
-																{
-																	"headers": (
+									var voucherFileName = (
+											(
+												await	(
+															await	fetch(
+																		"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher,
 																		{
-																			Authorization: "Basic ${ accessToken }",
+																			"headers": (
+																				{
+																					Authorization: "Basic ${ accessToken }",
+																				}
+																			),
 																		}
-																	),
-																}
-															)
-												).text( )
-									)
-								||
-									(
-										""
-									)
-							);
+																	)
+														).text( )
+											)
+										||
+											(
+												""
+											)
+									);
 
-							var APDFileName = (
-									(
-										await	(
-													await	fetch(
-																"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD,
-																{
-																	"headers": (
+									var APDFileName = (
+											(
+												await	(
+															await	fetch(
+																		"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD,
 																		{
-																			Authorization: "Basic ${ accessToken }",
+																			"headers": (
+																				{
+																					Authorization: "Basic ${ accessToken }",
+																				}
+																			),
 																		}
-																	),
-																}
-															)
-												).text( )
-									)
-								||
-									(
-										""
-									)
+																	)
+														).text( )
+											)
+										||
+											(
+												""
+											)
+									);
+
+									if(
+											(
+													voucherFileName
+													.length
+												>	0
+											)
+									){
+										selectInputFileComponent.append(
+											$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
+										);
+									}
+
+									if(
+											(
+													APDFileName
+													.length
+												>	0
+											)
+									){
+										selectInputFileComponent.append(
+											$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
+										);
+									}
+
+									return	(
+												{
+													"voucherFileName": voucherFileName,
+													"APDFileName": APDFileName
+												}
+											);
+								}
+					)( )
+					.then(
+						function( attachData ){
+							console.log(
+								(
+									attachData.voucherFileName
+								),
+
+								(
+									attachData.APDFileName
+								),
+
+								(
+									"done"
+								)
 							);
-
-							if(
-									(
-											voucherFileName
-											.length
-										>	0
-									)
-							){
-								selectInputFileComponent.append(
-									$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
-								);
-							}
-
-							if(
-									(
-											APDFileName
-											.length
-										>	0
-									)
-							){
-								selectInputFileComponent.append(
-									$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
-								);
-							}
 						}
+					);
+				}
 			);
 			`
 		);
 
-		document.documentElement.setAttribute( "onsearch", actualCode );
-		document.documentElement.dispatchEvent( new CustomEvent( "search" ) );
-		document.documentElement.removeAttribute( "onsearch" );
+		document.documentElement.setAttribute( "oninvalid", actualCode );
+		document.documentElement.dispatchEvent( new CustomEvent( "invalid" ) );
+		document.documentElement.removeAttribute( "oninvalid" );
 	}
 );
