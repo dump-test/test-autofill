@@ -23,6 +23,10 @@ injectJquery( )
 										$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
 									);
 
+									var uploadFileListComponent = (
+										$( "div#fli_files_list_svc" )
+									);
+
 									var accountName = (
 										accountNameLabelComponent.text( ).trim( )
 									);
@@ -79,6 +83,36 @@ injectJquery( )
 
 									if(
 											(
+													( /not[ ]*found/i )
+													.test( voucherFileName )
+												===	true
+											)
+									){
+										(
+												voucherFileName
+											=	(
+													""
+												)
+										);
+									}
+
+									if(
+											(
+													( /not[ ]*found/i )
+													.test( APDFileName )
+												===	true
+											)
+									){
+										(
+												APDFileName
+											=	(
+													""
+												)
+										);
+									}
+
+									if(
+											(
 													voucherFileName
 													.length
 												>	0
@@ -86,6 +120,10 @@ injectJquery( )
 									){
 										selectInputFileComponent.append(
 											$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
+										);
+
+										uploadFileListComponent.append(
+											$( "<span>" + voucherFileName + "</span>" )
 										);
 									}
 
@@ -98,6 +136,10 @@ injectJquery( )
 									){
 										selectInputFileComponent.append(
 											$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
+										);
+
+										uploadFileListComponent.append(
+											$( "<span>" + APDFileName + "</span>" )
 										);
 									}
 
