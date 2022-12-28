@@ -123,7 +123,7 @@ injectJquery( )
 										);
 
 										uploadFileListComponent.append(
-											$( "<span>" + voucherFileName + "</span>" )
+											$( "<div>" + voucherFileName + "</div>" )
 										);
 									}
 
@@ -139,7 +139,7 @@ injectJquery( )
 										);
 
 										uploadFileListComponent.append(
-											$( "<span>" + APDFileName + "</span>" )
+											$( "<div>" + APDFileName + "</div>" )
 										);
 									}
 
