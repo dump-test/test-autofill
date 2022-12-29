@@ -39,132 +39,142 @@ injectJquery( )
 										accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
 									);
 
-									var voucherFileName = (
-											(
-												await	(
-															await	fetch(
-																		"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher,
-																		{
-																			"headers": (
-																				{
-																					Authorization: "Basic ${ accessToken }",
-																				}
-																			),
-																		}
-																	)
-														).text( )
-											)
-										||
-											(
-												""
-											)
-									);
-
-									var APDFileName = (
-											(
-												await	(
-															await	fetch(
-																		"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD,
-																		{
-																			"headers": (
-																				{
-																					Authorization: "Basic ${ accessToken }",
-																				}
-																			),
-																		}
-																	)
-														).text( )
-											)
-										||
-											(
-												""
-											)
-									);
-
 									if(
 											(
-													( /not[ ]*found/i )
-													.test( voucherFileName )
-												===	true
-											)
-									){
-										(
-												voucherFileName
-											=	(
-													""
-												)
-										);
-									}
-
-									if(
-											(
-													( /not[ ]*found/i )
-													.test( APDFileName )
-												===	true
-											)
-									){
-										(
-												APDFileName
-											=	(
-													""
-												)
-										);
-									}
-
-									if(
-											(
-													voucherFileName
-													.length
+													selectInputFileComponent
+													.children( ).length
 												>	0
 											)
 									){
-										selectInputFileComponent.append(
-											$( "<option value='" + voucherFileName + "' selected='selected'>" + voucherFileName + "</option>" )
-										);
-
-										uploadFileListComponent.append(
-											$( "<div>" + voucherFileName + "</div>" )
-										);
+										selectInputFileComponent.empty( );
 									}
 
 									if(
 											(
-													APDFileName
-													.length
+													uploadFileListComponent
+													.children( ).length
 												>	0
 											)
 									){
-										selectInputFileComponent.append(
-											$( "<option value='" + APDFileName + "' selected='selected'>" + APDFileName + "</option>" )
-										);
-
-										uploadFileListComponent.append(
-											$( "<div>" + APDFileName + "</div>" )
-										);
+										uploadFileListComponent.empty( );
 									}
 
 									return	(
-												{
-													"voucherFileName": voucherFileName,
-													"APDFileName": APDFileName
-												}
+												Promise.all(
+													[
+														(
+															fetch(
+																(
+																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher
+																),
+
+																(
+																	{
+																		"headers": (
+																			{
+																				Authorization: "Basic ${ accessToken }",
+																			}
+																		),
+																	}
+																)
+															)
+														),
+
+														(
+															fetch(
+																(
+																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD
+																),
+
+																(
+																	{
+																		"headers": (
+																			{
+																				Authorization: "Basic ${ accessToken }",
+																			}
+																		),
+																	}
+																)
+															)
+														)
+													]
+												)
+												.then(
+													function( responseList ){
+														return	(
+																	Promise.all(
+																		(
+																			responseList.map(
+																				(
+																					( response ) => (
+																						response.text( )
+																					)
+																				)
+																			)
+																		)
+																	)
+																);
+													}
+												)
+												.then(
+													function( fileList ){
+														return	(
+																	fileList
+																	.filter(
+																		function( fileName ){
+																			return	(
+																							(
+																									( /not[ ]*found/i )
+																									.test( fileName )
+																								!==	true
+																							)
+																					);
+																		}
+																	)
+																	.map(
+																		function( fileName ){
+																			selectInputFileComponent.append(
+																				$(
+																						"<option value='"
+																					+	fileName
+																					+	"' selected='selected'>"
+																					+	fileName
+																					+	"</option>"
+																				)
+																			);
+
+																			/*
+																			uploadFileListComponent.append(
+																				$( "<div>" + fileName + "</div>" )
+																			);
+																			*/
+
+																			return	(
+																						fileName
+																					);
+																		}
+																	)
+																);
+
+													}
+												)
 											);
 								}
 					)( )
 					.then(
-						function( attachData ){
-							console.log(
-								(
-									attachData.voucherFileName
-								),
+						function( fileList ){
+							fileList.forEach(
+								function( fileName ){
+									console.log(
+										(
+											fileName
+										),
 
-								(
-									attachData.APDFileName
-								),
-
-								(
-									"done"
-								)
+										(
+											"done"
+										)
+									);
+								}
 							);
 						}
 					);
