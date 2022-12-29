@@ -13,6 +13,10 @@ injectJquery( )
 			`
 			$(
 				function( ){
+					var startDateTime = (
+						Date.now( )
+					);
+
 					(
 						async	function( ){
 									var selectInputFileComponent = (
@@ -175,6 +179,19 @@ injectJquery( )
 										)
 									);
 								}
+							);
+
+							console.log(
+								(
+									"duration"
+								),
+
+								(
+										(
+											Date.now( ) - startDateTime
+										)
+									/	1000
+								) + "seconds"
 							);
 						}
 					);
