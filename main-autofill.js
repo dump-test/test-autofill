@@ -29,6 +29,26 @@ injectJquery( )
 						$( "select#field-deduction_code" )
 					);
 
+					var submitButtonComponent = (
+						$( "button.btn.btn-default.btn-success.b10#form-button-save[type=submit]" )
+					);
+
+					if(
+							(
+									targetSelectDeductionComponent
+									.length
+								<=	0
+							)
+						&&
+							(
+									submitButtonComponent
+									.length
+								<=	0
+							)
+					){
+						return;
+					}
+
 					if(
 							(
 									chosenSelectDeductionComponent
@@ -171,7 +191,7 @@ injectJquery( )
 																			if(
 																					(
 																							$(
-																								"option[value=" + fileName + "]",
+																								"option[value='" + fileName + "']",
 																								selectInputFileComponent
 																							)
 																							.length
@@ -236,30 +256,7 @@ injectJquery( )
 								) + "seconds"
 							);
 
-							var submitButtonComponent = (
-								$( "button.btn.btn-default.btn-success.b10#form-submit" )
-							);
-
-							var yesButtonComponent = (
-								$( "a.btn.btn-xs.btn-primary[data-apply=confirmation]" )
-							);
-
-							submitButtonComponent
-							.click(
-								function( ){
-									yesButtonComponent.click( );
-								}
-							);
-
 							submitButtonComponent.click( );
-
-							/*;
-							var submitButtonComponent = (
-								$( "button.btn.btn-default.btn-success.b10#form-button-save[type=submit]" )
-							);
-
-							submitButtonComponent.click( );
-							*/
 						}
 					);
 				}
