@@ -18,7 +18,7 @@ GEM_BIN_PATH="$HOME/.gem/bin";
 GBP=$GEM_BIN_PATH;
 
 #;	@note: clean nodejs binary path;
-[[ $(echo $PATH | grep -oP $GBP | head -1) == $NVPN ]] &&\
+[[ $(echo $PATH | grep -oP $GBP ) == $GBP ]] &&\
 export PATH="$(echo $PATH | tr ":" "\n" | grep -v $GBP | tr "\n" ":" | sed "s/:\{2,\}/:/g" | sed "s/:$//")";
 
 #;	@note: export nodejs binary path;
