@@ -21,6 +21,160 @@ injectJquery( )
 						Date.now( )
 					);
 
+					var targetActorLastNameComponent = (
+						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 1 )" )
+					);
+
+					var targetActorFirstNameComponent = (
+						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 2 )" )
+					);
+
+					var targetActorMiddleNameComponent = (
+						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 3 )" )
+					);
+
+					if(
+							(
+									targetActorLastNameComponent
+									.length
+								>	0
+							)
+						&&
+							(
+									targetActorFirstNameComponent
+									.length
+								>	0
+							)
+						&&
+							(
+									targetActorMiddleNameComponent
+									.length
+								>	0
+							)
+					){
+						var accountName = (
+							[
+								targetActorLastNameComponent.text( ).trim( ),
+								targetActorFirstNameComponent.text( ).trim( ),
+								targetActorMiddleNameComponent.text( ).trim( ),
+							]
+							.join( "," )
+						);
+
+						var fileKeyVoucher = (
+							accountName.replace( /[^A-Z]+/g, "_" ) + "_VOUCHER"
+						);
+
+						var fileKeyAPD = (
+							accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
+						);
+
+						Promise.all(
+							[
+								(
+									fetch(
+										(
+											"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher
+										),
+
+										(
+											{
+												"headers": (
+													{
+														Authorization: "Basic ${ accessToken }",
+													}
+												),
+											}
+										)
+									)
+								),
+
+								(
+									fetch(
+										(
+											"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD
+										),
+
+										(
+											{
+												"headers": (
+													{
+														Authorization: "Basic ${ accessToken }",
+													}
+												),
+											}
+										)
+									)
+								)
+							]
+						)
+						.then(
+							function( responseList ){
+								return	(
+											Promise.all(
+												(
+													responseList.map(
+														(
+															( response ) => (
+																response.text( )
+															)
+														)
+													)
+												)
+											)
+										);
+							}
+						)
+						.then(
+							function( fileList ){
+								fileList.forEach(
+									function( fileName ){
+										console.log(
+											(
+												fileName
+											),
+
+											(
+												"done"
+											)
+										);
+									}
+								);
+
+								console.log(
+									(
+										"file cache duration"
+									),
+
+									(
+											(
+												Date.now( ) - startDateTime
+											)
+										/	1000
+									) + "seconds"
+								);
+							}
+						);
+
+						return;
+					}
+
+					var addDeductionControlComponent = (
+						$( "div.col-sm-12 > div.col-sm-1 > a.btn.btn-default[href*='pensions/fli']" )
+					);
+
+					if(
+							(
+									addDeductionControlComponent
+									.length
+								>	0
+							)
+					){
+						addDeductionControlComponent.click( );
+
+						return;
+					}
+
 					var chosenSelectDeductionComponent = (
 						$( "#field_deduction_code_chzn" )
 					);
@@ -245,7 +399,7 @@ injectJquery( )
 
 							console.log(
 								(
-									"duration"
+									"form send duration"
 								),
 
 								(
