@@ -21,6 +21,7 @@ injectJquery( )
 						Date.now( )
 					);
 
+					/*
 					var targetActorLastNameComponent = (
 						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 1 )" )
 					);
@@ -32,8 +33,26 @@ injectJquery( )
 					var targetActorMiddleNameComponent = (
 						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 3 )" )
 					);
+					*/
+
+					var deductionListTitleComponent = (
+						$( "h4.panel-title > a:contains('Deduction List')" )
+					);
+
+					var addDeductionControlComponent = (
+						$( "div.col-sm-12 > div.col-sm-1 > a.btn.btn-default[href*='pensions/fli']" )
+					);
+
+					var actorNameLabelComponent = (
+						$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
+					);
+
+					var actorName = (
+						actorNameLabelComponent.text( ).trim( )
+					);
 
 					if(
+						/*
 							(
 									targetActorLastNameComponent
 									.length
@@ -51,14 +70,31 @@ injectJquery( )
 									.length
 								>	0
 							)
+						*/
+
+							(
+									actorNameLabelComponent
+									.length
+								>	0
+							)
+						&&
+							(
+									deductionListTitleComponent
+									.length
+								>	0
+							)
 					){
 						var accountName = (
+							/*
 							[
 								targetActorLastNameComponent.text( ).trim( ),
 								targetActorFirstNameComponent.text( ).trim( ),
 								targetActorMiddleNameComponent.text( ).trim( ),
 							]
 							.join( "," )
+							*/
+
+							actorName
 						);
 
 						var fileKeyVoucher = (
@@ -153,27 +189,67 @@ injectJquery( )
 										/	1000
 									) + "seconds"
 								);
+
+								if(
+										(
+												window.localStorage.getItem( "target-actor" )
+											!==	actorName
+										)
+									&&
+										(
+												addDeductionControlComponent
+												.length
+											>	0
+										)
+								){
+									addDeductionControlComponent[ 0 ].click( );
+
+									window.localStorage.setItem( "target-actor", actorName );
+								}
 							}
 						);
 
 						return;
 					}
 
+					/*
+					var actorNameLabelComponent = (
+						$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
+					);
+
 					var addDeductionControlComponent = (
 						$( "div.col-sm-12 > div.col-sm-1 > a.btn.btn-default[href*='pensions/fli']" )
 					);
 
+					var actorName = (
+						actorNameLabelComponent.text( ).trim( )
+					);
+
 					if(
+							(
+									actorNameLabelComponent
+									.length
+								>	0
+							)
+						&&
 							(
 									addDeductionControlComponent
 									.length
 								>	0
 							)
 					){
-						addDeductionControlComponent.click( );
+						if(
+								window.localStorage.getItem( "target-actor" )
+							!==	actorName
+						){
+							addDeductionControlComponent[ 0 ].click( );
+
+							window.localStorage.setItem( "target-actor", actorName );
+						}
 
 						return;
 					}
+					*/
 
 					var chosenSelectDeductionComponent = (
 						$( "#field_deduction_code_chzn" )
