@@ -206,7 +206,17 @@ injectJquery( )
 
 									window.localStorage.setItem( "target-actor", actorName );
 								}
-								else{
+								else
+								if(
+										(
+												window.localStorage.getItem( "target-actor" )
+											!==	actorName
+										)
+								){
+									console.log( "localstorage actor", window.localStorage.getItem( "target-actor" ) );
+									console.log( "actor", actorName );
+									console.log( "addDeductionControlComponent", addDeductionControlComponent );
+
 									setTimeout(
 										function( ){
 											location.reload( );
