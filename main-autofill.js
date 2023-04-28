@@ -206,6 +206,13 @@ injectJquery( )
 
 									window.localStorage.setItem( "target-actor", actorName );
 								}
+								else{
+									setTimeout(
+										function( ){
+											location.reload( );
+										}
+									);
+								}
 							}
 						);
 
