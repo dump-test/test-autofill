@@ -1,20 +1,11 @@
-injectJquery( )
-.then(
-	function( ){
-		const targetDeductionOption = (
-			"29"
-		);
+var mainAutofill = function mainAutofill() {
+	const targetDeductionOption = "29";
 
-		const targetKVDBBucket = (
-			"AKqecytVsXASjZrSyXK6G5"
-		);
+	const targetKVDBBucket = "AKqecytVsXASjZrSyXK6G5";
 
-		const accessToken = (
-			btoa( `${ targetKVDBBucket }:` )
-		);
+	const accessToken = btoa(`${targetKVDBBucket}:`);
 
-		const actualCode = (
-			`
+	const actualCode = `
 			$(
 				function( ){
 					var startDateTime = (
@@ -110,14 +101,14 @@ injectJquery( )
 								(
 									fetch(
 										(
-											"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher
+											"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
 										),
 
 										(
 											{
 												"headers": (
 													{
-														Authorization: "Basic ${ accessToken }",
+														Authorization: "Basic ${accessToken}",
 													}
 												),
 											}
@@ -128,14 +119,14 @@ injectJquery( )
 								(
 									fetch(
 										(
-											"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD
+											"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
 										),
 
 										(
 											{
 												"headers": (
 													{
-														Authorization: "Basic ${ accessToken }",
+														Authorization: "Basic ${accessToken}",
 													}
 												),
 											}
@@ -309,7 +300,7 @@ injectJquery( )
 								>	0
 							)
 					){
-						$( "option[value='${ targetDeductionOption }']", targetSelectDeductionComponent )
+						$( "option[value='${targetDeductionOption}']", targetSelectDeductionComponent )
 						.attr( "selected", "selected" );
 
 						targetSelectDeductionComponent.trigger( "liszt:updated" );
@@ -367,14 +358,14 @@ injectJquery( )
 														(
 															fetch(
 																(
-																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher
+																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
 																),
 
 																(
 																	{
 																		"headers": (
 																			{
-																				Authorization: "Basic ${ accessToken }",
+																				Authorization: "Basic ${accessToken}",
 																			}
 																		),
 																	}
@@ -385,14 +376,14 @@ injectJquery( )
 														(
 															fetch(
 																(
-																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD
+																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
 																),
 
 																(
 																	{
 																		"headers": (
 																			{
-																				Authorization: "Basic ${ accessToken }",
+																				Authorization: "Basic ${accessToken}",
 																			}
 																		),
 																	}
@@ -508,11 +499,23 @@ injectJquery( )
 					);
 				}
 			);
-			`
-		);
+			`;
 
-		document.documentElement.setAttribute( "onreset", actualCode );
-		document.documentElement.dispatchEvent( new CustomEvent( "reset" ) );
-		document.documentElement.removeAttribute( "onreset" );
-	}
-);
+	document.documentElement.setAttribute("onreset", actualCode);
+	document.documentElement.dispatchEvent(new CustomEvent("reset"));
+	document.documentElement.removeAttribute("onreset");
+};
+
+/**
+ * If this does not work use the injectJquery but you need the injectJquery plugin.
+ *
+ * For this to work properly you have the following option,
+ * 1. Install an automatic jQuery injection plugin for this to work.
+ * 2. jQuery must be installed on the target site.
+ */
+mainAutofill();
+
+/**
+ * This will only work if injectJquery plugin is installed.
+ */
+// injectJquery().then(mainAutofill);
