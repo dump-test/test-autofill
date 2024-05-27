@@ -1,16 +1,9 @@
-injectJquery( )
-.then(
-	function( ){
-		const targetKVDBBucket = (
-			"AKqecytVsXASjZrSyXK6G5"
-		);
+var attachAutofill = function attachAutofill() {
+	const targetKVDBBucket = "AKqecytVsXASjZrSyXK6G5";
 
-		const accessToken = (
-			btoa( `${ targetKVDBBucket }:` )
-		);
+	const accessToken = btoa(`${targetKVDBBucket}:`);
 
-		const actualCode = (
-			`
+	const actualCode = `
 			$(
 				function( ){
 					var startDateTime = (
@@ -69,14 +62,14 @@ injectJquery( )
 														(
 															fetch(
 																(
-																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyVoucher
+																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
 																),
 
 																(
 																	{
 																		"headers": (
 																			{
-																				Authorization: "Basic ${ accessToken }",
+																				Authorization: "Basic ${accessToken}",
 																			}
 																		),
 																	}
@@ -87,14 +80,14 @@ injectJquery( )
 														(
 															fetch(
 																(
-																	"https://kvdb.io/${ targetKVDBBucket }/" + fileKeyAPD
+																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
 																),
 
 																(
 																	{
 																		"headers": (
 																			{
-																				Authorization: "Basic ${ accessToken }",
+																				Authorization: "Basic ${accessToken}",
 																			}
 																		),
 																	}
@@ -197,11 +190,23 @@ injectJquery( )
 					);
 				}
 			);
-			`
-		);
+			`;
 
-		document.documentElement.setAttribute( "oninvalid", actualCode );
-		document.documentElement.dispatchEvent( new CustomEvent( "invalid" ) );
-		document.documentElement.removeAttribute( "oninvalid" );
-	}
-);
+	document.documentElement.setAttribute("oninvalid", actualCode);
+	document.documentElement.dispatchEvent(new CustomEvent("invalid"));
+	document.documentElement.removeAttribute("oninvalid");
+};
+
+/**
+ * If this does not work use the injectJquery but you need the injectJquery plugin.
+ *
+ * For this to work properly you have the following option,
+ * 1. Install an automatic jQuery injection plugin for this to work.
+ * 2. jQuery must be installed on the target site.
+ */
+attachAutofill();
+
+/**
+ * This will only work if injectJquery plugin is installed.
+ */
+// injectJquery().then(attachAutofill);
