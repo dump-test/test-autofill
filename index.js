@@ -1,50 +1,26 @@
 "use strict";
 
-const main = (
-	async	function main( ){
-				const util = require( "util" );
+const main = async function main() {
+    const util = require("util");
 
-				const express = require( "express" );
+    const express = require("express");
 
-				const PORT = process.env.PORT;
+    const PORT = process.env.PORT;
 
-				const SERVICE = (
-					express( )
-				);
+    const SERVICE = express();
 
-				SERVICE.use(
-					(
-						express.static( "./" )
-					)
-				);
+    SERVICE.use(express.static("./"));
 
-				SERVICE.listen(
-					(
-						PORT
-					),
+    SERVICE.listen(PORT, () => {
+        console.log(`test-autofill running at ${PORT}`);
+    });
 
-					(
-						( ) => {
-							console.log(
-								`test-autofill running at ${ PORT }`
-							);
-						}
-					)
-				);
+    return process.pid;
+};
 
-				return	(
-							process.pid
-						);
-			}
-);
+(async function() {
+    const fs = require("fs");
+    const fsAsync = fs.promises;
 
-(
-	(
-		async	function( ){
-					const fs = require( "fs" );
-					const fsAsync = fs.promises;
-
-					await fsAsync.writeFile( "./node.pid", `${ await main( ) }` );
-				}
-	)( )
-);
+    await fsAsync.writeFile("./node.pid", `${await main()}`);
+})();

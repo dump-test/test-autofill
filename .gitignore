@@ -3,9 +3,9 @@
 !.editorconfig
 
 !.gitignore
-
+!.gitmessage
 !.npmignore
-
+!.gitconfig
 !.npmrc
 
 !LICENSE

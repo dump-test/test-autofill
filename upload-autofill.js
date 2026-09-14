@@ -1,147 +1,71 @@
 var uploadAutofill = function uploadAutofill() {
-	const targetKVDBBucket = "3AHWrTzx5SmanAw1CvJc5y";
+    const intervalDuration = 1000 * 60 * 5;
 
-	const intervalDuration = 1000 * 60 * 5;
+    const actualCode = `
+$(function() {
+    var selectInputFileComponent = $("select#fli_files_multiple_select");
 
-	const accessToken = btoa(`${targetKVDBBucket}:`);
+    var fileList = [];
 
-	const actualCode = `
-			$(
-				function( ){
-					var selectInputFileComponent = (
-						$( "select#fli_files_multiple_select" )
-					);
+    var intervalReference = setInterval(function() {
+        $("option", selectInputFileComponent).each(async function() {
+            var filePath = $(this).text().trim();
 
-					var fileList = [ ];
+            if (typeof filePath == "string" && filePath.length <= 0) {
+                return;
+            }
 
-					var intervalReference = (
-						setInterval(
-							function( ){
-								$( "option", selectInputFileComponent )
-								.each(
-									async	function( ){
-												var filePath = (
-													$( this ).text( ).trim( )
-												);
+            if (fileList.includes(filePath) === true) {
+                return;
+            }
 
-												if(
-														(
-																typeof
-																filePath
-															==	"string"
-														)
-													&&
-														(
-																filePath
-																.length
-															<=	0
-														)
-												){
-													return;
-												}
+            fileList.push(filePath);
 
-												if(
-														(
-																fileList.includes( filePath )
-															===	true
-														)
-												){
-													return;
-												}
+            var fileKey = filePath.split(/_[0-9]/)[0];
 
-												fileList.push( filePath );
+            var fileName = filePath;
 
-												var fileKey = filePath.split( /_[0-9]/ )[ 0 ];
+            var startKeyListLength = (
+                await (
+                    await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")
+                ).json()
+            )?.count ?? 0;
 
-												var fileName = filePath;
+            var pushStatus = (
+                await (
+                    await fetch(
+                        "http://localhost:7375/service/data/keys/pkbmpc/" + fileKey,
+                        {
+                            "body": JSON.stringify({ value: fileName }),
+                            "headers": {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            "method": "POST",
+                        }
+                    )
+                ).text()
+            );
 
-												var startKeyListLength = (
-													(
-														await	(
-																	await	fetch(
-																				"https://kvdb.io/${targetKVDBBucket}/?format=json",
-																				{
-																					"headers": (
-																						{
-																							Authorization: "Basic ${accessToken}",
-																						}
-																					),
-																				}
-																			)
-																).json( )
-													)
-													.length
-												);
+            var nextKeyListLength = (
+                await (
+                    await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")
+                ).json()
+            )?.count ?? 0;
 
-												var pushStatus = (
-													await	(
-																await	fetch(
-																			"https://kvdb.io/${targetKVDBBucket}/" + fileKey,
-																			{
-																				"body": fileName,
-																				"headers": (
-																					{
-																						Authorization: "Basic ${accessToken}",
-																						"Content-Type": "application/x-www-form-urlencoded"
-																					}
-																				),
-																				"method": "POST"
-																			}
-																		)
-															).text( )
-												);
+            console.log(
+                fileKey,
+                fileName,
+                nextKeyListLength > startKeyListLength,
+                pushStatus || "done"
+            );
+        });
+    }, ${intervalDuration});
+});
+`;
 
-												var nextKeyListLength = (
-													(
-														await	(
-																	await	fetch(
-																				"https://kvdb.io/${targetKVDBBucket}/?format=json",
-																				{
-																					"headers": (
-																						{
-																							Authorization: "Basic ${accessToken}",
-																						}
-																					),
-																				}
-																			)
-																).json( )
-													)
-													.length
-												);
-
-												console.log(
-													(
-														fileKey
-													),
-
-													(
-														fileName
-													),
-
-													(
-														nextKeyListLength > startKeyListLength
-													),
-
-													(
-														pushStatus || "done"
-													)
-												);
-											}
-								);
-							},
-
-							(
-								${intervalDuration}
-							)
-						)
-					);
-				}
-			);
-			`;
-
-	document.documentElement.setAttribute("oninvalid", actualCode);
-	document.documentElement.dispatchEvent(new CustomEvent("invalid"));
-	document.documentElement.removeAttribute("oninvalid");
+    document.documentElement.setAttribute("oninvalid", actualCode);
+    document.documentElement.dispatchEvent(new CustomEvent("invalid"));
+    document.documentElement.removeAttribute("oninvalid");
 };
 
 /**

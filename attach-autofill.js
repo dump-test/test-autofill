@@ -1,200 +1,94 @@
 var attachAutofill = function attachAutofill() {
-	const targetKVDBBucket = "AKqecytVsXASjZrSyXK6G5";
+    const actualCode = `
+$(function() {
+    var startDateTime = Date.now();
 
-	const accessToken = btoa(`${targetKVDBBucket}:`);
+    (async function() {
+        var selectInputFileComponent = (
+            $("select#fli_files_multiple_select")
+        );
 
-	const actualCode = `
-			$(
-				function( ){
-					var startDateTime = (
-						Date.now( )
-					);
+        var accountNameLabelComponent = (
+            $(
+                ".form-container.table-container > " +
+                ".row.bor-bot:nth-child(2) .readonly_label"
+            )
+        );
 
-					(
-						async	function( ){
-									var selectInputFileComponent = (
-										$( "select#fli_files_multiple_select" )
-									);
+        var uploadFileListComponent = (
+            $("div#fli_files_list_svc")
+        );
 
-									var accountNameLabelComponent = (
-										$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
-									);
+        var accountName = accountNameLabelComponent.text().trim();
 
-									var uploadFileListComponent = (
-										$( "div#fli_files_list_svc" )
-									);
+        var fileKeyVoucher = (
+            accountName.replace(/[^A-Z]+/g, "_") + "_VOUCHER"
+        );
 
-									var accountName = (
-										accountNameLabelComponent.text( ).trim( )
-									);
+        var fileKeyAPD = (
+            accountName.replace(/[^A-Z]+/g, "_") + "_APD"
+        );
 
-									var fileKeyVoucher = (
-										accountName.replace( /[^A-Z]+/g, "_" ) + "_VOUCHER"
-									);
+        if (selectInputFileComponent.children().length > 0) {
+            selectInputFileComponent.empty();
+        }
 
-									var fileKeyAPD = (
-										accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
-									);
+        if (uploadFileListComponent.children().length > 0) {
+            uploadFileListComponent.empty();
+        }
 
-									if(
-											(
-													selectInputFileComponent
-													.children( ).length
-												>	0
-											)
-									){
-										selectInputFileComponent.empty( );
-									}
+        return Promise.all([
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyVoucher),
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyAPD),
+        ])
+        .then(function(responseList) {
+            return Promise.all(
+                responseList.map((response) => JSON.parse(response.text())?.value ?? "")
+            );
+        })
+        .then(function(fileList) {
+            return fileList
+                .filter(function(fileName) {
+                    return (
+                        (/not[ ]*found/i).test(fileName) !== true
+                    );
+                })
+                .map(function(fileName) {
+                    selectInputFileComponent.append(
+                        $(
+                            "<option value='" + fileName + "'" +
+                            " selected='selected'>" +
+                            fileName +
+                            "</option>"
+                        )
+                    );
 
-									if(
-											(
-													uploadFileListComponent
-													.children( ).length
-												>	0
-											)
-									){
-										uploadFileListComponent.empty( );
-									}
+                    /*
+                    uploadFileListComponent.append(
+                        $("<div>" + fileName + "</div>")
+                    );
+                    */
 
-									return	(
-												Promise.all(
-													[
-														(
-															fetch(
-																(
-																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
-																),
+                    return fileName;
+                });
+        });
+    })()
+    .then(function(fileList) {
+        fileList.forEach(function(fileName) {
+            console.log(fileName, "done");
+        });
 
-																(
-																	{
-																		"headers": (
-																			{
-																				Authorization: "Basic ${accessToken}",
-																			}
-																		),
-																	}
-																)
-															)
-														),
+        console.log(
+            "duration",
+            ((Date.now() - startDateTime) / 1000) + "seconds"
+        );
+    });
+});
+`;
 
-														(
-															fetch(
-																(
-																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
-																),
-
-																(
-																	{
-																		"headers": (
-																			{
-																				Authorization: "Basic ${accessToken}",
-																			}
-																		),
-																	}
-																)
-															)
-														)
-													]
-												)
-												.then(
-													function( responseList ){
-														return	(
-																	Promise.all(
-																		(
-																			responseList.map(
-																				(
-																					( response ) => (
-																						response.text( )
-																					)
-																				)
-																			)
-																		)
-																	)
-																);
-													}
-												)
-												.then(
-													function( fileList ){
-														return	(
-																	fileList
-																	.filter(
-																		function( fileName ){
-																			return	(
-																							(
-																									( /not[ ]*found/i )
-																									.test( fileName )
-																								!==	true
-																							)
-																					);
-																		}
-																	)
-																	.map(
-																		function( fileName ){
-																			selectInputFileComponent.append(
-																				$(
-																						"<option value='"
-																					+	fileName
-																					+	"' selected='selected'>"
-																					+	fileName
-																					+	"</option>"
-																				)
-																			);
-
-																			/*
-																			uploadFileListComponent.append(
-																				$( "<div>" + fileName + "</div>" )
-																			);
-																			*/
-
-																			return	(
-																						fileName
-																					);
-																		}
-																	)
-																);
-
-													}
-												)
-											);
-								}
-					)( )
-					.then(
-						function( fileList ){
-							fileList.forEach(
-								function( fileName ){
-									console.log(
-										(
-											fileName
-										),
-
-										(
-											"done"
-										)
-									);
-								}
-							);
-
-							console.log(
-								(
-									"duration"
-								),
-
-								(
-										(
-											Date.now( ) - startDateTime
-										)
-									/	1000
-								) + "seconds"
-							);
-						}
-					);
-				}
-			);
-			`;
-
-	document.documentElement.setAttribute("oninvalid", actualCode);
-	document.documentElement.dispatchEvent(new CustomEvent("invalid"));
-	document.documentElement.removeAttribute("oninvalid");
+    document.documentElement.setAttribute("oninvalid", actualCode);
+    document.documentElement.dispatchEvent(new CustomEvent("invalid"));
+    document.documentElement.removeAttribute("oninvalid");
 };
 
 /**

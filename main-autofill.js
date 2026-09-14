@@ -1,509 +1,277 @@
 var mainAutofill = function mainAutofill() {
-	const targetDeductionOption = "29";
+    const targetDeductionOption = "29";
+    const actualCode = `
+$(function() {
+    var startDateTime = Date.now();
 
-	const targetKVDBBucket = "AKqecytVsXASjZrSyXK6G5";
+    /*
+    var targetActorLastNameComponent = (
+        $("table.groceryCrudTable > tbody > tr > td:nth-child(1)")
+    );
 
-	const accessToken = btoa(`${targetKVDBBucket}:`);
+    var targetActorFirstNameComponent = (
+        $("table.groceryCrudTable > tbody > tr > td:nth-child(2)")
+    );
 
-	const actualCode = `
-			$(
-				function( ){
-					var startDateTime = (
-						Date.now( )
-					);
+    var targetActorMiddleNameComponent = (
+        $("table.groceryCrudTable > tbody > tr > td:nth-child(3)")
+    );
+    */
 
-					/*
-					var targetActorLastNameComponent = (
-						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 1 )" )
-					);
+    var deductionListTitleComponent = (
+        $("h4.panel-title > a:contains('Deduction List')")
+    );
 
-					var targetActorFirstNameComponent = (
-						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 2 )" )
-					);
+    var addDeductionControlComponent = (
+        $(
+            "div.col-sm-12 > div.col-sm-1 > " +
+            "a.btn.btn-default[href*='pensions/fli']"
+        )
+    );
 
-					var targetActorMiddleNameComponent = (
-						$( "table.groceryCrudTable > tbody > tr > td:nth-child( 3 )" )
-					);
-					*/
+    var actorNameLabelComponent = (
+        $(
+            ".form-container.table-container > " +
+            ".row.bor-bot:nth-child(2) .readonly_label"
+        )
+    );
 
-					var deductionListTitleComponent = (
-						$( "h4.panel-title > a:contains('Deduction List')" )
-					);
+    var actorName = actorNameLabelComponent.text().trim();
 
-					var addDeductionControlComponent = (
-						$( "div.col-sm-12 > div.col-sm-1 > a.btn.btn-default[href*='pensions/fli']" )
-					);
+    if (
+        /*
+        targetActorLastNameComponent.length > 0 &&
+        targetActorFirstNameComponent.length > 0 &&
+        targetActorMiddleNameComponent.length > 0
+        */
+        actorNameLabelComponent.length > 0 &&
+        deductionListTitleComponent.length > 0
+    ) {
+        var accountName = (
+            /*
+            [
+                targetActorLastNameComponent.text().trim(),
+                targetActorFirstNameComponent.text().trim(),
+                targetActorMiddleNameComponent.text().trim(),
+            ].join(",")
+            */
+            actorName
+        );
 
-					var actorNameLabelComponent = (
-						$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
-					);
+        var fileKeyVoucher = (
+            accountName.replace(/[^A-Z]+/g, "_") + "_VOUCHER"
+        );
 
-					var actorName = (
-						actorNameLabelComponent.text( ).trim( )
-					);
+        var fileKeyAPD = (
+            accountName.replace(/[^A-Z]+/g, "_") + "_APD"
+        );
 
-					if(
-						/*
-							(
-									targetActorLastNameComponent
-									.length
-								>	0
-							)
-						&&
-							(
-									targetActorFirstNameComponent
-									.length
-								>	0
-							)
-						&&
-							(
-									targetActorMiddleNameComponent
-									.length
-								>	0
-							)
-						*/
+        Promise.all([
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyVoucher),
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyAPD),
+        ])
+        .then(function(responseList) {
+            return Promise.all(
+                responseList.map((response) => JSON.parse(response.text())?.value ?? "")
+            );
+        })
+        .then(function(fileList) {
+            fileList.forEach(function(fileName) {
+                console.log(fileName, "done");
+            });
 
-							(
-									actorNameLabelComponent
-									.length
-								>	0
-							)
-						&&
-							(
-									deductionListTitleComponent
-									.length
-								>	0
-							)
-					){
-						var accountName = (
-							/*
-							[
-								targetActorLastNameComponent.text( ).trim( ),
-								targetActorFirstNameComponent.text( ).trim( ),
-								targetActorMiddleNameComponent.text( ).trim( ),
-							]
-							.join( "," )
-							*/
+            console.log(
+                "file cache duration",
+                ((Date.now() - startDateTime) / 1000) + "seconds"
+            );
 
-							actorName
-						);
+            if (
+                window.localStorage.getItem("target-actor") !== actorName &&
+                addDeductionControlComponent.length > 0
+            ) {
+                addDeductionControlComponent[0].click();
+                window.localStorage.setItem("target-actor", actorName);
+            } else if (
+                window.localStorage.getItem("target-actor") !== actorName
+            ) {
+                console.log(
+                    "localstorage actor",
+                    window.localStorage.getItem("target-actor")
+                );
+                console.log("actor", actorName);
+                console.log(
+                    "addDeductionControlComponent",
+                    addDeductionControlComponent
+                );
 
-						var fileKeyVoucher = (
-							accountName.replace( /[^A-Z]+/g, "_" ) + "_VOUCHER"
-						);
+                setTimeout(function() {
+                    location.reload();
+                });
+            }
+        });
 
-						var fileKeyAPD = (
-							accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
-						);
+        return;
+    }
 
-						Promise.all(
-							[
-								(
-									fetch(
-										(
-											"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
-										),
+    /*
+    var actorNameLabelComponent = (
+        $(
+            ".form-container.table-container > " +
+            ".row.bor-bot:nth-child(2) .readonly_label"
+        )
+    );
 
-										(
-											{
-												"headers": (
-													{
-														Authorization: "Basic ${accessToken}",
-													}
-												),
-											}
-										)
-									)
-								),
+    var addDeductionControlComponent = (
+        $(
+            "div.col-sm-12 > div.col-sm-1 > " +
+            "a.btn.btn-default[href*='pensions/fli']"
+        )
+    );
 
-								(
-									fetch(
-										(
-											"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
-										),
+    var actorName = actorNameLabelComponent.text().trim();
 
-										(
-											{
-												"headers": (
-													{
-														Authorization: "Basic ${accessToken}",
-													}
-												),
-											}
-										)
-									)
-								)
-							]
-						)
-						.then(
-							function( responseList ){
-								return	(
-											Promise.all(
-												(
-													responseList.map(
-														(
-															( response ) => (
-																response.text( )
-															)
-														)
-													)
-												)
-											)
-										);
-							}
-						)
-						.then(
-							function( fileList ){
-								fileList.forEach(
-									function( fileName ){
-										console.log(
-											(
-												fileName
-											),
+    if (
+        actorNameLabelComponent.length > 0 &&
+        addDeductionControlComponent.length > 0
+    ) {
+        if (window.localStorage.getItem("target-actor") !== actorName) {
+            addDeductionControlComponent[0].click();
+            window.localStorage.setItem("target-actor", actorName);
+        }
 
-											(
-												"done"
-											)
-										);
-									}
-								);
+        return;
+    }
+    */
 
-								console.log(
-									(
-										"file cache duration"
-									),
+    var chosenSelectDeductionComponent = (
+        $("#field_deduction_code_chzn")
+    );
 
-									(
-											(
-												Date.now( ) - startDateTime
-											)
-										/	1000
-									) + "seconds"
-								);
+    var targetSelectDeductionComponent = (
+        $("select#field-deduction_code")
+    );
 
-								if(
-										(
-												window.localStorage.getItem( "target-actor" )
-											!==	actorName
-										)
-									&&
-										(
-												addDeductionControlComponent
-												.length
-											>	0
-										)
-								){
-									addDeductionControlComponent[ 0 ].click( );
+    var submitButtonComponent = (
+        $(
+            "button.btn.btn-default.btn-success.b10" +
+            "#form-button-save[type=submit]"
+        )
+    );
 
-									window.localStorage.setItem( "target-actor", actorName );
-								}
-								else
-								if(
-										(
-												window.localStorage.getItem( "target-actor" )
-											!==	actorName
-										)
-								){
-									console.log( "localstorage actor", window.localStorage.getItem( "target-actor" ) );
-									console.log( "actor", actorName );
-									console.log( "addDeductionControlComponent", addDeductionControlComponent );
+    if (
+        targetSelectDeductionComponent.length <= 0 &&
+        submitButtonComponent.length <= 0
+    ) {
+        return;
+    }
 
-									setTimeout(
-										function( ){
-											location.reload( );
-										}
-									);
-								}
-							}
-						);
+    if (
+        chosenSelectDeductionComponent.length > 0 &&
+        targetSelectDeductionComponent.length > 0
+    ) {
+        $(
+            "option[value='${targetDeductionOption}']",
+            targetSelectDeductionComponent
+        ).attr("selected", "selected");
 
-						return;
-					}
+        targetSelectDeductionComponent.trigger("liszt:updated");
+    }
 
-					/*
-					var actorNameLabelComponent = (
-						$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
-					);
+    var selectInputFileComponent = (
+        $("select#fli_files_multiple_select")
+    );
 
-					var addDeductionControlComponent = (
-						$( "div.col-sm-12 > div.col-sm-1 > a.btn.btn-default[href*='pensions/fli']" )
-					);
+    var accountNameLabelComponent = (
+        $(
+            ".form-container.table-container > " +
+            ".row.bor-bot:nth-child(2) .readonly_label"
+        )
+    );
 
-					var actorName = (
-						actorNameLabelComponent.text( ).trim( )
-					);
+    var uploadFileListComponent = (
+        $("div#fli_files_list_svc")
+    );
 
-					if(
-							(
-									actorNameLabelComponent
-									.length
-								>	0
-							)
-						&&
-							(
-									addDeductionControlComponent
-									.length
-								>	0
-							)
-					){
-						if(
-								window.localStorage.getItem( "target-actor" )
-							!==	actorName
-						){
-							addDeductionControlComponent[ 0 ].click( );
+    var accountName = accountNameLabelComponent.text().trim();
 
-							window.localStorage.setItem( "target-actor", actorName );
-						}
+    var fileKeyVoucher = (
+        accountName.replace(/[^A-Z]+/g, "_") + "_VOUCHER"
+    );
 
-						return;
-					}
-					*/
+    var fileKeyAPD = (
+        accountName.replace(/[^A-Z]+/g, "_") + "_APD"
+    );
 
-					var chosenSelectDeductionComponent = (
-						$( "#field_deduction_code_chzn" )
-					);
+    if (selectInputFileComponent.children().length > 0) {
+        selectInputFileComponent.empty();
+    }
 
-					var targetSelectDeductionComponent = (
-						$( "select#field-deduction_code" )
-					);
+    if (uploadFileListComponent.children().length > 0) {
+        uploadFileListComponent.empty();
+    }
 
-					var submitButtonComponent = (
-						$( "button.btn.btn-default.btn-success.b10#form-button-save[type=submit]" )
-					);
+    (async function() {
+        return Promise.all([
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyVoucher),
+            fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyAPD),
+        ])
+        .then(function(responseList) {
+            return Promise.all(
+                responseList.map((response) => JSON.parse(response.text())?.value ?? "")
+            );
+        })
+        .then(function(fileList) {
+            return fileList
+                .filter(function(fileName) {
+                    return (
+                        (/not[ ]*found/i).test(fileName) !== true
+                    );
+                })
+                .map(function(fileName) {
+                    if (
+                        $(
+                            "option[value='" + fileName + "']",
+                            selectInputFileComponent
+                        ).length === 0
+                    ) {
+                        selectInputFileComponent.append(
+                            $(
+                                "<option value='" + fileName + "'" +
+                                " selected='selected'>" +
+                                fileName +
+                                "</option>"
+                            )
+                        );
 
-					if(
-							(
-									targetSelectDeductionComponent
-									.length
-								<=	0
-							)
-						&&
-							(
-									submitButtonComponent
-									.length
-								<=	0
-							)
-					){
-						return;
-					}
+                        /*
+                        uploadFileListComponent.append(
+                            $("<div>" + fileName + "</div>")
+                        );
+                        */
+                    }
 
-					if(
-							(
-									chosenSelectDeductionComponent
-									.length
-								>	0
-							)
-						&&
-							(
-									targetSelectDeductionComponent
-									.length
-								>	0
-							)
-					){
-						$( "option[value='${targetDeductionOption}']", targetSelectDeductionComponent )
-						.attr( "selected", "selected" );
+                    return fileName;
+                });
+        });
+    })()
+    .then(function(fileList) {
+        fileList.forEach(function(fileName) {
+            console.log(fileName, "done");
+        });
 
-						targetSelectDeductionComponent.trigger( "liszt:updated" );
-					}
+        console.log(
+            "form send duration",
+            ((Date.now() - startDateTime) / 1000) + "seconds"
+        );
 
-					var selectInputFileComponent = (
-						$( "select#fli_files_multiple_select" )
-					);
+        submitButtonComponent.click();
+    });
+});
+`;
 
-					var accountNameLabelComponent = (
-						$( ".form-container.table-container > .row.bor-bot:nth-child(2) .readonly_label" )
-					);
-
-					var uploadFileListComponent = (
-						$( "div#fli_files_list_svc" )
-					);
-
-					var accountName = (
-						accountNameLabelComponent.text( ).trim( )
-					);
-
-					var fileKeyVoucher = (
-						accountName.replace( /[^A-Z]+/g, "_" ) + "_VOUCHER"
-					);
-
-					var fileKeyAPD = (
-						accountName.replace( /[^A-Z]+/g, "_" ) + "_APD"
-					);
-
-					if(
-							(
-									selectInputFileComponent
-									.children( ).length
-								>	0
-							)
-					){
-						selectInputFileComponent.empty( );
-					}
-
-					if(
-							(
-									uploadFileListComponent
-									.children( ).length
-								>	0
-							)
-					){
-						uploadFileListComponent.empty( );
-					}
-
-					(
-						async	function( ){
-									return	(
-												Promise.all(
-													[
-														(
-															fetch(
-																(
-																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyVoucher
-																),
-
-																(
-																	{
-																		"headers": (
-																			{
-																				Authorization: "Basic ${accessToken}",
-																			}
-																		),
-																	}
-																)
-															)
-														),
-
-														(
-															fetch(
-																(
-																	"https://kvdb.io/${targetKVDBBucket}/" + fileKeyAPD
-																),
-
-																(
-																	{
-																		"headers": (
-																			{
-																				Authorization: "Basic ${accessToken}",
-																			}
-																		),
-																	}
-																)
-															)
-														)
-													]
-												)
-												.then(
-													function( responseList ){
-														return	(
-																	Promise.all(
-																		(
-																			responseList.map(
-																				(
-																					( response ) => (
-																						response.text( )
-																					)
-																				)
-																			)
-																		)
-																	)
-																);
-													}
-												)
-												.then(
-													function( fileList ){
-														return	(
-																	fileList
-																	.filter(
-																		function( fileName ){
-																			return	(
-																							(
-																									( /not[ ]*found/i )
-																									.test( fileName )
-																								!==	true
-																							)
-																					);
-																		}
-																	)
-																	.map(
-																		function( fileName ){
-																			if(
-																					(
-																							$(
-																								"option[value='" + fileName + "']",
-																								selectInputFileComponent
-																							)
-																							.length
-																						===	0
-																					)
-																			){
-																				selectInputFileComponent.append(
-																					$(
-																							"<option value='"
-																						+	fileName
-																						+	"' selected='selected'>"
-																						+	fileName
-																						+	"</option>"
-																					)
-																				);
-
-																				/*
-																				uploadFileListComponent.append(
-																					$( "<div>" + fileName + "</div>" )
-																				);
-																				*/
-																			}
-
-																			return	(
-																						fileName
-																					);
-																		}
-																	)
-																);
-
-													}
-												)
-											);
-								}
-					)( )
-					.then(
-						function( fileList ){
-							fileList.forEach(
-								function( fileName ){
-									console.log(
-										(
-											fileName
-										),
-
-										(
-											"done"
-										)
-									);
-								}
-							);
-
-							console.log(
-								(
-									"form send duration"
-								),
-
-								(
-										(
-											Date.now( ) - startDateTime
-										)
-									/	1000
-								) + "seconds"
-							);
-
-							submitButtonComponent.click( );
-						}
-					);
-				}
-			);
-			`;
-
-	document.documentElement.setAttribute("onreset", actualCode);
-	document.documentElement.dispatchEvent(new CustomEvent("reset"));
-	document.documentElement.removeAttribute("onreset");
+    document.documentElement.setAttribute("onreset", actualCode);
+    document.documentElement.dispatchEvent(new CustomEvent("reset"));
+    document.documentElement.removeAttribute("onreset");
 };
 
 /**
