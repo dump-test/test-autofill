@@ -10,4 +10,4 @@
     email = richeve.bebedor@gmail.com
 
 [core]
-    sshCommand = ssh -i ./.credentials/m42-systems -o IdentitiesOnly=yes
+    sshCommand = ssh -i ./.credentials/test-autofill -o IdentitiesOnly=yes
