@@ -1,83 +1,56 @@
 var uploadAutofill = function uploadAutofill() {
-    const intervalDuration = 1000 * 60 * 5;
-
     const actualCode = `
 $(function() {
-    var selectInputFileComponent = $("select#fli_files_multiple_select");
-
-    var fileList = [];
+    var fileListCache = [];
 
     var intervalReference = setInterval(function() {
-        $("option", selectInputFileComponent).each(async function() {
+        var selectInputFileComponent = $("select#fli_files_multiple_select");
+
+        if (selectInputFileComponent.length <= 0) return;
+        if ($("option", selectInputFileComponent).length <= 0) return;
+
+        const fileDataList = $("option", selectInputFileComponent).map(function() {
             var filePath = $(this).text().trim();
 
-            if (typeof filePath == "string" && filePath.length <= 0) {
-                return;
-            }
+            if (typeof filePath == "string" && filePath.length <= 0) return;
 
-            if (fileList.includes(filePath) === true) {
-                return;
-            }
+            if (fileListCache.includes(filePath) === true) return;
 
-            fileList.push(filePath);
+            fileListCache.push(filePath);
 
             var fileKey = filePath.split(/_[0-9]/)[0];
 
             var fileName = filePath;
 
-            var startKeyListLength = (
-                await (
-                    await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")
-                ).json()
-            )?.count ?? 0;
+            return [fileKey, fileName];
+        }).get().filter((fileData) => !!fileData)
 
-            var pushStatus = (
-                await (
-                    await fetch(
-                        "http://localhost:7375/service/data/keys/pkbmpc/" + fileKey,
-                        {
-                            "body": JSON.stringify({ value: fileName }),
-                            "headers": {
-                                "Content-Type": "application/x-www-form-urlencoded",
-                            },
-                            "method": "POST",
-                        }
-                    )
-                ).text()
-            );
+        if (fileDataList.length <= 0) return;
 
-            var nextKeyListLength = (
-                await (
-                    await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")
-                ).json()
-            )?.count ?? 0;
+        Promise.all(fileDataList.map(([fileKey, fileName]) => (async function() {
+            var startKeyListLength = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")).json())?.count ?? 0;
 
-            console.log(
-                fileKey,
-                fileName,
-                nextKeyListLength > startKeyListLength,
-                pushStatus || "done"
-            );
-        });
-    }, ${intervalDuration});
+            var pushStatus = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKey, {
+                    "body": JSON.stringify({ value: fileName }),
+                    "headers": {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    "method": "POST",
+                }
+            )).text());
+
+            var nextKeyListLength = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")).json())?.count ?? 0;
+
+            console.log(fileKey, fileName, nextKeyListLength > startKeyListLength, pushStatus || "done");
+        }));
+    });
 });
 `;
 
-    document.documentElement.setAttribute("oninvalid", actualCode);
-    document.documentElement.dispatchEvent(new CustomEvent("invalid"));
-    document.documentElement.removeAttribute("oninvalid");
+    var script = document.createElement("script");
+    script.textContent = actualCode;
+    document.documentElement.appendChild(script);
+    script.remove();
 };
 
-/**
- * If this does not work use the injectJquery but you need the injectJquery plugin.
- *
- * For this to work properly you have the following option,
- * 1. Install an automatic jQuery injection plugin for this to work.
- * 2. jQuery must be installed on the target site.
- */
 uploadAutofill();
-
-/**
- * This will only work if injectJquery plugin is installed.
- */
-// injectJquery().then(uploadAutofill);
