@@ -22,12 +22,12 @@ $(function() {
 
             var fileName = filePath;
 
-            return [fileKey, fileName];
+            return { fileKey: fileKey, fileName: fileName };
         }).get().filter((fileData) => !!fileData)
 
         if (fileDataList.length <= 0) return;
 
-        Promise.all(fileDataList.map(([fileKey, fileName]) => (async function() {
+        Promise.all(fileDataList.map(({ fileKey, fileName }) => (async function() {
             var startKeyListLength = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")).json())?.count ?? 0;
 
             var pushStatus = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKey, {
