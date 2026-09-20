@@ -16,8 +16,6 @@ $(function() {
 
             if (fileListCache.includes(filePath) === true) return;
 
-            fileListCache.push(filePath);
-
             var fileKey = filePath.split(/_[0-9]/)[0];
 
             var fileName = filePath;
@@ -42,6 +40,8 @@ $(function() {
             var nextKeyListLength = (await (await fetch("http://localhost:7375/service/data/keys/pkbmpc/count")).json())?.count ?? 0;
 
             console.log(fileKey, fileName, nextKeyListLength > startKeyListLength, pushStatus || "done");
+
+            fileListCache.push(fileName);
         }));
     });
 });
