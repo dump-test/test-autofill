@@ -57,9 +57,9 @@ $(function() {
 
     var targetSelectDeductionComponent = $("select#field-deduction_code");
 
-    var submitButtonComponent = $("button.btn.btn-default.btn-success.b10 #form-button-save[type=submit]");
+    var submitButtonComponent = $("button#form-button-save[type=submit].btn.btn-default.btn-success.b10");
 
-    if (targetSelectDeductionComponent.length <= 0 || submitButtonComponent.length <= 0) return;
+    if (targetSelectDeductionComponent.length <= 0 && submitButtonComponent.length <= 0) return;
 
     if (chosenSelectDeductionComponent.length > 0 && targetSelectDeductionComponent.length > 0) {
         $("option[value='${targetDeductionOption}']", targetSelectDeductionComponent).attr("selected", "selected");
