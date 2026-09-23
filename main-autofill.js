@@ -24,9 +24,11 @@ $(function() {
             fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyAPD),
         ])
         .then(function(responseList) {
-            return Promise.all(responseList.map(async (response) => (await response.json())?.value ?? ""));
+            return Promise.all(responseList.map((response) => response.json()));
         })
         .then(function(fileList) {
+            fileList = fileList.map((file) => file?.value ?? "").filter((fileName) => !!fileName);
+
             fileList.forEach(function(fileName) {
                 console.log(fileName, "done");
             });
@@ -87,9 +89,11 @@ $(function() {
             fetch("http://localhost:7375/service/data/keys/pkbmpc/" + fileKeyAPD),
         ])
         .then(function(responseList) {
-            return Promise.all(responseList.map(async (response) => (await response.json())?.value ?? ""));
+            return Promise.all(responseList.map((response) => response.json()));
         })
         .then(function(fileList) {
+            fileList = fileList.map((file) => file?.value ?? "").filter((fileName) => !!fileName);
+
             return fileList
                 .filter(function(fileName) {
                     return ((/not[ ]*found/i).test(fileName) !== true);
