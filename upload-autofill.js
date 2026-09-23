@@ -42,7 +42,7 @@ $(function() {
             console.log(fileKey, fileName, nextKeyListLength > startKeyListLength, pushStatus || "done");
 
             fileListCache.push(fileName);
-        }));
+        })()));
     });
 });
 `;
