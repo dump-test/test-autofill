@@ -92,12 +92,9 @@ $(function() {
             return Promise.all(responseList.map((response) => response.json()));
         })
         .then(function(fileList) {
-            fileList = fileList.map((file) => file?.value ?? "").filter((fileName) => !!fileName);
-
             return fileList
-                .filter(function(fileName) {
-                    return ((/not[ ]*found/i).test(fileName) !== true);
-                })
+                .map((file) => file?.value ?? "")
+                .filter((fileName) => !!fileName)
                 .map(function(fileName) {
                     if ($("option[value='" + fileName + "']", selectInputFileComponent).length === 0) {
                         selectInputFileComponent.append($("<option value='" + fileName + "' selected='selected'>" + fileName + "</option>"));
