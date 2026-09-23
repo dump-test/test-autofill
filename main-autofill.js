@@ -59,7 +59,7 @@ $(function() {
 
     var submitButtonComponent = $("button.btn.btn-default.btn-success.b10 #form-button-save[type=submit]");
 
-    if (targetSelectDeductionComponent.length <= 0 && submitButtonComponent.length <= 0) return;
+    if (targetSelectDeductionComponent.length <= 0 || submitButtonComponent.length <= 0) return;
 
     if (chosenSelectDeductionComponent.length > 0 && targetSelectDeductionComponent.length > 0) {
         $("option[value='${targetDeductionOption}']", targetSelectDeductionComponent).attr("selected", "selected");
